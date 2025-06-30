@@ -27,7 +27,7 @@ model Departure {
   id            Int       @id @default(autoincrement())
   direction     Direction
   dayType       DayType
-  departureTime DateTime  @map("departure_time")
+  departureTime String    @map("departure_time") @db.VarChar(5)
   destination   String
   note          String?
 

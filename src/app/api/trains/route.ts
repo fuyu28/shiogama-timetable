@@ -36,8 +36,9 @@ export async function GET() {
   const now = new Date();
   const dayType = holiday_jp.isHoliday(now) ? "HOLIDAY" : "WEEKDAY";
   try {
-    const trains = await getNextTrains(Direction.UP, dayType as DayType);
-    return NextResponse.json({ trains });
+    const upTrains = await getNextTrains(Direction.UP, dayType as DayType);
+    const downTrains = await getNextTrains(Direction.DOWN, dayType as DayType);
+    return NextResponse.json({ upTrains, downTrains });
   } catch (e) {
     console.error(e);
     return NextResponse.json(

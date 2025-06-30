@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Direction {
+  UP // 上り (伏見・上小田井・犬山方面)
+  DOWN // 下り (赤池・豊田市方面)
+}
+
+enum DayType {
+  WEEKDAY
+  HOLIDAY
+}
+
+model Departure {
+  id            Int       @id @default(autoincrement())
+  direction     Direction
+  dayType       DayType
+  departureTime DateTime  @map("departure_time")
+  destination   String
+  note          String?
+
+  @@index([dayType, direction, departureTime])
+}

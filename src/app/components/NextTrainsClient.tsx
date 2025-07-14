@@ -63,12 +63,14 @@ export function NextTrainsClient() {
       .join(":");
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="mb-8 text-center text-3xl font-bold">
         現在時刻: {fmt(currentTime)}
       </h2>
 
-      <section className="rounded-lg bg-white p-6 shadow-md">
+      {/* 上りと下りを横に並べる */}
+      <div className="flex flex-col md:flex-row md:gap-8">
+      <section className="flex-1 rounded-lg bg-white p-6 shadow-md">
         <h3 className="mb-4 border-b-2 border-blue-500 pb-2 text-2xl font-semibold text-gray-700">
           上り 次の 3 本
         </h3>
@@ -82,7 +84,7 @@ export function NextTrainsClient() {
         </ul>
       </section>
 
-      <section className="mt-8 rounded-lg bg-white p-6 shadow-md">
+      <section className="flex-1 rounded-lg bg-white p-6 shadow-md">
         <h3 className="mb-4 border-b-2 border-green-500 pb-2 text-2xl font-semibold text-gray-700">
           下り 次の 3 本
         </h3>
@@ -95,6 +97,7 @@ export function NextTrainsClient() {
           ))}
         </ul>
       </section>
+      </div>
     </div>
   );
 }

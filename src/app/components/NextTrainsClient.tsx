@@ -12,15 +12,67 @@ type Departure = {
 };
 
 
+// 発車時刻までの残り時間を表示するコンポーネント
+const Countdown = ({
+  departureTime,
+  currentTime,
+}: {
+  departureTime: string;
+  currentTime: Date;
+}) => {
+  const [remaining, setRemaining] = useState({ minutes: 0, seconds: 0 });
+
+  // currentTimeが変更されるたびに残り時間を再計算する
+  useEffect(() => {
+    const calculateRemainingTime = () => {
+      const now = currentTime;
+      const [hours, minutes] = departureTime.split(':').map(Number);
+
+      const departureDate = new Date(now);
+      departureDate.setHours(hours, minutes, 0, 0);
+
+      // もし計算した発車時刻が現在時刻より過去なら、明日の時刻とする
+      if (departureDate < now) {
+        departureDate.setDate(departureDate.getDate() + 1);
+      }
+
+      const diff = departureDate.getTime() - now.getTime();
+
+      // 差が0以下なら残り時間は0
+      if (diff <= 0) {
+        return { minutes: 0, seconds: 0 };
+      }
+
+      const totalSeconds = Math.floor(diff / 1000);
+      const remainingMinutes = Math.floor(totalSeconds / 60);
+      const remainingSeconds = totalSeconds % 60;
+
+      return { minutes: remainingMinutes, seconds: remainingSeconds };
+    };
+
+    setRemaining(calculateRemainingTime());
+  }, [currentTime, departureTime]);
+
+  return (
+    <div className="mt-2 text-xl font-medium text-gray-600">
+      {/* 2桁表示になるように0埋めする */}
+      残り {String(remaining.minutes).padStart(2, ' ')}分 {String(remaining.seconds).padStart(2, '0')}秒
+    </div>
+  );
+};
+
+
 // 上り、下りそれぞれで電車情報を表示するコンポーネント
 const TrainDisplayGrid = ({
   trains,
   title,
   borderColor,
+  currentTime,
 }: {
   trains: Departure[];
   title: string;
   borderColor: string;
+  currentTime: Date;
 }) => {
   // 表示する電車を配列から取り出す
   const firstTrain = trains.length > 0 ? trains[0] : null;
@@ -52,7 +104,7 @@ const TrainDisplayGrid = ({
         style={{ minHeight: "240px" }}
       >
         {/* 左半分: 次の電車 --- */}
-        <div className={`${cellClasses} row-span-2 border-l-4 ${borderColor}`}>
+        <div className={`flex flex-col items-start justify-center rounded-lg bg-gray-50 p-4 text-left shadow-inner row-span-2 border-l-4 ${borderColor}`}>
           <div className="mb-2 text-sm text-gray-500">次発</div>
           {firstTrain ? (
             <>
@@ -60,11 +112,15 @@ const TrainDisplayGrid = ({
                 {firstTrain.departureTime}
               </div>
               <div className="mt-1 text-lg text-gray-600">
-                {firstTrain.destination}
+                {firstTrain.destination} 行
                 {firstTrain.note && (
                   <span className="block text-sm">({firstTrain.note})</span>
                 )}
               </div>
+              <Countdown
+                departureTime={firstTrain.departureTime}
+                currentTime={currentTime}
+              />
             </>
           ) : (
             <div className="text-gray-400">情報なし</div>
@@ -72,7 +128,7 @@ const TrainDisplayGrid = ({
         </div>
 
         {/* 右上: その次の電車 --- */}
-        <div className={cellClasses}>
+        <div className='flex flex-col items-start justify-center rounded-lg bg-gray-50 p-4 text-left shadow-inner'>
           <div className="mb-1 text-sm text-gray-500">次のダイヤ</div>
           {secondTrain ? (
             <>
@@ -80,7 +136,7 @@ const TrainDisplayGrid = ({
                 {secondTrain.departureTime}
               </div>
               <div className="text-base text-gray-600">
-                {secondTrain.destination}
+                {secondTrain.destination} 行
                 {secondTrain.note && (
                   <span className="block text-xs">({secondTrain.note})</span>
                 )}
@@ -92,7 +148,7 @@ const TrainDisplayGrid = ({
         </div>
 
         {/* 右下: 次の次の電車 --- */}
-        <div className={cellClasses}>
+        <div className='flex flex-col items-start justify-center rounded-lg bg-gray-50 p-4 text-left shadow-inner'>
           <div className="mb-1 text-sm text-gray-500">次の次のダイヤ</div>
           {thirdTrain ? (
             <>
@@ -100,7 +156,7 @@ const TrainDisplayGrid = ({
                 {thirdTrain.departureTime}
               </div>
               <div className="text-base text-gray-600">
-                {thirdTrain.destination}
+                {thirdTrain.destination} 行
                 {thirdTrain.note && (
                   <span className="block text-xs">({thirdTrain.note})</span>
                 )}
@@ -114,6 +170,7 @@ const TrainDisplayGrid = ({
     </section>
   );
 };
+
 
 // メインコンポーネント
 export function NextTrainsClient() {
@@ -180,12 +237,14 @@ export function NextTrainsClient() {
           trains={upTrains}
           title="上り"
           borderColor="border-blue-500"
+          currentTime={currentTime}
         />
         {/* 下り方面の表示 */}
         <TrainDisplayGrid
           trains={downTrains}
           title="下り"
           borderColor="border-green-500"
+          currentTime={currentTime}
         />
       </div>
     </div>

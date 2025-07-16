@@ -21,7 +21,7 @@
 2. **Docker でアプリケーションを起動**
 
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 3. **アプリケーションにアクセス**
@@ -47,7 +47,7 @@
 npm install
 
 # データベース起動
-docker-compose up -d db
+docker compose up -d db
 
 # データベースのセットアップ
 npm run db:setup
@@ -96,7 +96,7 @@ npm run start
 
 ```bash
 # 既存のプロセスを停止
-docker-compose down
+docker compose down
 
 # または、使用中のポートを確認
 netstat -ano | findstr :3000
@@ -106,17 +106,17 @@ netstat -ano | findstr :3000
 
 ```bash
 # コンテナを完全に削除して再起動
-docker-compose down -v
-docker-compose up -d
+docker compose down -v
+docker compose up -d
 ```
 
 ### Node.js 関連のエラー
 
 ```bash
 # node_modules を削除して再インストール
-docker-compose down
-docker-compose build --no-cache
-docker-compose up -d
+docker compose down
+docker compose build --no-cache
+docker compose up -d
 ```
 
 ## 📝 その他の情報

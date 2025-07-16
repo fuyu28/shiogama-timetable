@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { exec } from "child_process";
-import path from "path";
 
 // データベース初期化スクリプト
 async function setupDatabase() {
@@ -33,21 +32,17 @@ async function setupDatabase() {
 // コマンド実行用のPromiseラッパー
 function execCommand(command) {
   return new Promise((resolve, reject) => {
-    exec(
-      command,
-      { cwd: "/app" },
-      (error, stdout, stderr) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        console.log(stdout);
-        if (stderr) {
-          console.error(stderr);
-        }
-        resolve();
-      },
-    );
+    exec(command, { cwd: "/app" }, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      console.log(stdout);
+      if (stderr) {
+        console.error(stderr);
+      }
+      resolve();
+    });
   });
 }
 

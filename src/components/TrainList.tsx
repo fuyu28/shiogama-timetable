@@ -4,6 +4,7 @@ import { useFormat } from "@/hooks/useFormat";
 import { currentTimeAtom } from "@/atoms/timeAtom";
 import { DepartureType } from "@/types/train";
 import { TrainListItem } from "./TrainListItem";
+import { isEdgeTrain } from "@/utils/train";
 
 type TrainListProps = {
   trains: DepartureType[];
@@ -29,6 +30,8 @@ export const TrainList = ({ trains, direction }: TrainListProps) => {
           isNext={train.id === nextTrain?.id}
           isPast={train.departureTime < formatTimeHHMM(currentTime)}
           direction={direction}
+          isFirst={isEdgeTrain(train, trains, "first")}
+          isLast={isEdgeTrain(train, trains, "last")}
         />
       ))}
     </div>

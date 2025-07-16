@@ -23,7 +23,7 @@ export const PageHeader = ({
     <header className="sticky top-0 bg-blue-600 text-white shadow-lg z-10">
       <div className="flex items-center justify-between p-4 max-w-5xl mx-auto">
         {showBackButton && backHref ? (
-          <Link 
+          <Link
             href={backHref}
             className="flex items-center justify-center w-10 h-10 bg-white/20 rounded-full hover:bg-white/30 transition-colors duration-200"
           >
@@ -32,9 +32,9 @@ export const PageHeader = ({
         ) : (
           <div className="w-10 h-10" />
         )}
-        
+
         <h1 className="text-xl font-bold text-center flex-1">{title}</h1>
-        
+
         <div className="flex items-center bg-white/20 rounded-full px-3 py-1 text-sm font-medium">
           <MdAccessTime className="w-4 h-4 mr-1" />
           <span suppressHydrationWarning>{formatTimeHHMM(currentTime)}</span>

@@ -10,7 +10,7 @@ export const toMinutes = (timStr: string) => {
 
 const getExtremeMinutes = (
   trains: DepartureType[],
-  mode: "min" | "max"
+  mode: "min" | "max",
 ): number | null => {
   if (trains.length === 0) return null;
 
@@ -21,7 +21,7 @@ const getExtremeMinutes = (
 export const isEdgeTrain = (
   target: DepartureType,
   trains: DepartureType[],
-  mode: "first" | "last"
+  mode: "first" | "last",
 ): boolean => {
   const extreme = getExtremeMinutes(trains, mode === "first" ? "min" : "max");
   if (extreme === null) return false;

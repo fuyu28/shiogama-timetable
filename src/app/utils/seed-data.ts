@@ -400,7 +400,7 @@ export async function generateDepartures(): Promise<
 function generateDepartureData(
   dayType: DayType,
   direction: Direction,
-  rows: Record<number, Entry[]>
+  rows: Record<number, Entry[]>,
 ): Prisma.DepartureCreateManyInput[] {
   const mapDest: Record<string, string> = {
     犬: "犬山",
@@ -421,7 +421,7 @@ function generateDepartureData(
         direction,
         dayType,
         departureTime: `${hh}:${mm}`,
-        destination: key ? mapDest[key] ?? defaultDest : defaultDest,
+        destination: key ? (mapDest[key] ?? defaultDest) : defaultDest,
         note: isExpress ? "急行" : null,
       };
     });

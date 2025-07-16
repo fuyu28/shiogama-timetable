@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 async function getNextTrains(
   direction: Direction,
-  dayType: DayType
+  dayType: DayType,
 ): Promise<Departure[]> {
   return prisma.departure.findMany({
     where: { AND: { direction, dayType } },
@@ -24,7 +24,7 @@ export async function GET() {
     console.error(e);
     return NextResponse.json(
       { error: "Failed to load trains" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

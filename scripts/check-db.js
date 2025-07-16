@@ -30,13 +30,13 @@ async function checkDatabase() {
 
       if (count === 0) {
         console.log(
-          "⚠️  データが空です。シードを実行してください: npm run db:seed"
+          "⚠️  データが空です。シードを実行してください: npm run db:seed",
         );
         return false;
       }
     } else {
       console.log(
-        "❌ Departureテーブルが存在しません。マイグレーションを実行してください: npm run db:migrate"
+        "❌ Departureテーブルが存在しません。マイグレーションを実行してください: npm run db:migrate",
       );
       return false;
     }

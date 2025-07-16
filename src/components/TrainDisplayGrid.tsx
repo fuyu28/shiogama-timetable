@@ -10,7 +10,7 @@ type TrainDisplayGridProps = {
   borderColor: string;
 };
 
-export const TrainDisplayGrid = React.memo(({
+const TrainDisplayGridComponent = ({
   trains,
   title,
   borderColor,
@@ -23,7 +23,7 @@ export const TrainDisplayGrid = React.memo(({
   // 各電車のセルに共通で適用するスタイル
   const cellClasses =
     "flex flex-col items-center justify-center rounded-lg bg-gray-50 p-3 text-center shadow-inner";
-  
+
   // 電車情報がない場合に表示するプレースホルダー
   const placeholderCell = (
     <div className={cellClasses}>
@@ -110,4 +110,8 @@ export const TrainDisplayGrid = React.memo(({
       </div>
     </section>
   );
-});
+};
+
+TrainDisplayGridComponent.displayName = "TrainDisplayGrid";
+
+export const TrainDisplayGrid = React.memo(TrainDisplayGridComponent);

@@ -1,0 +1,96 @@
+name: Update Timetable Data
+
+on:
+  # 毎年3月1日の午前2時に実行（日本時間）
+  schedule:
+    - cron: "0 17 28 2 *" # UTCで2月28日17時 = JST 3月1日2時
+
+  # 手動実行も可能
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Action to perform"
+        required: true
+        default: "update"
+        type: choice
+        options:
+          - update
+          - reset
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Update timetable data
+        env:
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
+          VERCEL_URL: ${{ secrets.VERCEL_URL }}
+        run: |
+          ACTION="${{ github.event.inputs.action || 'update' }}"
+
+          echo "Updating timetable data with action: $ACTION"
+
+          RESPONSE=$(curl -s -X POST \
+            -H "Authorization: Bearer $ADMIN_SECRET" \
+            -H "Content-Type: application/json" \
+            -d "{\"action\": \"update\"}" \
+            "$VERCEL_URL/api/admin/seed")
+
+          echo "Response: $RESPONSE"
+
+          # レスポンスが成功かチェック
+          if echo "$RESPONSE" | jq -e '.success' > /dev/null; then
+            echo "✅ Data update successful"
+            echo "Total records: $(echo "$RESPONSE" | jq -r '.totalRecords')"
+          else
+            echo "❌ Data update failed"
+            echo "$RESPONSE"
+            exit 1
+          fi
+
+      - name: Verify data
+        env:
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
+          VERCEL_URL: ${{ secrets.VERCEL_URL }}
+        run: |
+          echo "Verifying updated data..."
+
+          RESPONSE=$(curl -s -X GET \
+            -H "Authorization: Bearer $ADMIN_SECRET" \
+            "$VERCEL_URL/api/admin/seed")
+
+          echo "Verification response: $RESPONSE"
+
+          TOTAL_RECORDS=$(echo "$RESPONSE" | jq -r '.totalRecords')
+
+          if [ "$TOTAL_RECORDS" -gt 0 ]; then
+            echo "✅ Data verification successful. Total records: $TOTAL_RECORDS"
+          else
+            echo "❌ Data verification failed. No records found."
+            exit 1
+          fi
+
+      - name: Notify completion
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "🎉 Timetable data update completed successfully!"
+          else
+            echo "⚠️ Timetable data update failed. Please check the logs."
+          fi

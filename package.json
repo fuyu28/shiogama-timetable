@@ -6,7 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset --force",
+    "db:setup": "node scripts/db-setup.js",
+    "db:check": "node scripts/check-db.js",
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && prisma db push && next build",
+    "test:api": "node scripts/test-api.js"
   },
   "dependencies": {
     "@holiday-jp/holiday_jp": "^2.5.1",
@@ -32,6 +40,6 @@
     "typescript": "^5.8.3"
   },
   "prisma": {
-    "seed": "node prisma/build/seed.js"
+    "seed": "npx ts-node --project scripts/ts-node.json prisma/seed.ts"
   }
 }

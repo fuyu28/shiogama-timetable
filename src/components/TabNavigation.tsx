@@ -1,27 +1,32 @@
 import { useAtom } from "jotai";
 import { activeTabAtom } from "@/atoms/tabAtom";
+import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
 
 export const TabNavigation = () => {
   const [activeTab, setActiveTab] = useAtom(activeTabAtom);
-  const activeTabStyle = "bg-blue-500 text-white border-b-2 border-blue-500";
-  const inactiveTabStyle = "bg-gray-100 text-gray-600 hover:bg-gray-200";
 
   return (
-    <div className="flex border-b border-gray-200">
+    <div className="flex bg-gray-50 p-1 rounded-lg shadow-sm">
       <button
-        className={`flex-1 py-3 px-4 text-center ${
-          activeTab === "up" ? activeTabStyle : inactiveTabStyle
+        className={`flex-1 py-3 px-6 text-center font-medium rounded-md transition-all duration-200 ${
+          activeTab === "up"
+            ? "bg-blue-500 text-white shadow-md transform scale-105"
+            : "text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow-sm"
         }`}
         onClick={() => setActiveTab("up")}
       >
+        <MdArrowUpward className="w-4 h-4 inline mr-1" />
         上り
       </button>
       <button
-        className={`flex-1 py-3 px-4 text-center ${
-          activeTab === "down" ? activeTabStyle : inactiveTabStyle
+        className={`flex-1 py-3 px-6 text-center font-medium rounded-md transition-all duration-200 ml-1 ${
+          activeTab === "down"
+            ? "bg-green-500 text-white shadow-md transform scale-105"
+            : "text-gray-600 hover:bg-white hover:text-green-600 hover:shadow-sm"
         }`}
         onClick={() => setActiveTab("down")}
       >
+        <MdArrowDownward className="w-4 h-4 inline mr-1" />
         下り
       </button>
     </div>

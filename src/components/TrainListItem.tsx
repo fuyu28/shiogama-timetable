@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { DepartureType } from "@/types/train";
 
 type TrainListItemProps = {
@@ -9,14 +10,8 @@ type TrainListItemProps = {
   isLast: boolean;
 };
 
-export const TrainListItem = ({
-  train,
-  isNext,
-  isPast,
-  direction,
-  isFirst,
-  isLast,
-}: TrainListItemProps) => {
+export const TrainListItem = forwardRef<HTMLDivElement, TrainListItemProps>(
+  ({ train, isNext, isPast, direction, isFirst, isLast }, ref) => {
   const borderColor =
     direction === "up" ? "border-blue-500" : "border-green-500";
 
@@ -30,6 +25,7 @@ export const TrainListItem = ({
 
   return (
     <div
+      ref={ref}
       className={`p-4 rounded-lg border-l-4 ${borderColor} ${getItemStyle()} transition-all`}
     >
       <div className="flex justify-between items-start">
@@ -59,4 +55,6 @@ export const TrainListItem = ({
       </div>
     </div>
   );
-};
+});
+
+TrainListItem.displayName = "TrainListItem";

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useAtomValue } from "jotai";
 import { useFormat } from "@/hooks/useFormat";
 import { currentTimeAtom } from "@/atoms/timeAtom";
@@ -12,6 +12,7 @@ type TrainListProps = {
 };
 
 export const TrainList = ({ trains, direction }: TrainListProps) => {
+  const nextTrainRef = useRef<HTMLDivElement>(null);
   const currentTime = useAtomValue(currentTimeAtom);
   const { formatTimeHHMM } = useFormat();
 
@@ -21,11 +22,21 @@ export const TrainList = ({ trains, direction }: TrainListProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trains, currentTime]);
 
+  useEffect(() => {
+    if (nextTrainRef.current) {
+      nextTrainRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [trains, direction]);
+
   return (
     <div className="space-y-2 p-4">
       {trains.map((train) => (
         <TrainListItem
           key={train.id}
+          ref={train.id === nextTrain?.id ? nextTrainRef : null}
           train={train}
           isNext={train.id === nextTrain?.id}
           isPast={train.departureTime < formatTimeHHMM(currentTime)}

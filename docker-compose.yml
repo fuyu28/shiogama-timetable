@@ -1,16 +1,43 @@
-version: "3"
+version: "3.8"
 
 services:
   db:
-    image: postgres:14
+    image: postgres:16
     container_name: postgres_pta
+    restart: always
     ports:
       - 5432:5432
     volumes:
       - db-store:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     environment:
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "timetable_dev"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -p 5432"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://user:postgres@db:5432/timetable_dev"
+      NODE_ENV: development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: >
+      sh -c "
+        npm run db:setup &&
+        npm run dev
+      "
+
 volumes:
   db-store:

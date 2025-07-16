@@ -20,6 +20,7 @@ export const Countdown = ({ departureTime }: CountdownProps) => {
   useEffect(() => {
     const calculateRemainingTime = () => {
       const now = currentTime;
+      now.setMilliseconds(0);
       const [hours, minutes] = parsedTime;
 
       const departureDate = new Date(now);

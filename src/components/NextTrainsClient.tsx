@@ -3,24 +3,20 @@
 import React from "react";
 import { useAtomValue } from "jotai";
 import { currentTimeAtom } from "@/atoms/timeAtom";
-import { upTrainsAtom, downTrainsAtom } from "@/atoms/trainAtom";
-import { useCurrentTime } from "@/hooks/useCurrentTime";
-import { useTrains } from "@/hooks/useTrains";
+import {
+  filteredUpTrainsAtom,
+  filteredDownTrainsAtom,
+} from "@/atoms/trainAtom";
+import { useFormat } from "@/hooks/useFormat";
 import { TrainDisplayGrid } from "./TrainDisplayGrid";
+import Link from "next/link";
 
-export function NextTrainsClient() {
+export const NextTrainsClient = () => {
   const currentTime = useAtomValue(currentTimeAtom);
-  const upTrains = useAtomValue(upTrainsAtom);
-  const downTrains = useAtomValue(downTrainsAtom);
+  const upTrains = useAtomValue(filteredUpTrainsAtom);
+  const downTrains = useAtomValue(filteredDownTrainsAtom);
 
-  // カスタムフックで時刻管理とデータ取得
-  useCurrentTime();
-  useTrains();
-
-  const fmt = (d: Date) =>
-    [d.getHours(), d.getMinutes(), d.getSeconds()]
-      .map((n) => String(n).padStart(2, "0"))
-      .join(":");
+  const { formatTime } = useFormat();
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
@@ -28,7 +24,7 @@ export function NextTrainsClient() {
         suppressHydrationWarning
         className="mb-8 text-center text-3xl font-bold"
       >
-        現在時刻: {fmt(currentTime)}
+        現在時刻: {formatTime(currentTime)}
       </h2>
 
       {/* 上りと下りを横に並べる */}
@@ -46,6 +42,16 @@ export function NextTrainsClient() {
           borderColor="border-green-500"
         />
       </div>
+
+      {/* 時刻表一覧へのリンク */}
+      <div className="text-center mt-8">
+        <Link
+          href="/list"
+          className="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg shadow-sm transition-colors duration-200"
+        >
+          📋 時刻表一覧を見る
+        </Link>
+      </div>
     </div>
   );
-}
+};

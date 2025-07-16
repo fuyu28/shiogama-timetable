@@ -93,16 +93,35 @@ Vercelデプロイ時に`vercel-build`スクリプトが自動実行され、以
 デプロイ後、以下のAPIを叩いてシードデータを投入：
 
 ```bash
-# 初回データ投入
+# 初回データ投入（現在は固定のシードデータ）
 curl -X POST https://your-app.vercel.app/api/admin/seed \
   -H "Authorization: Bearer your-secret-key" \
   -H "Content-Type: application/json" \
   -d '{"action": "reset"}'
+
+# 将来的には Python スクレイピングで取得したデータを投入
+curl -X POST https://your-app.vercel.app/api/admin/seed \
+  -H "Authorization: Bearer your-secret-key" \
+  -H "Content-Type: application/json" \
+  -d '{"action": "update", "data": [...]}'
 ```
 
 ## 5. 年1回の自動データ更新
 
-### 5.1 GitHub Actionsの設定
+### 5.1 データ更新の仕組み
+
+#### 現在の実装
+
+- 手動で作成したシードデータを使用
+- GitHub Actionsで年1回自動更新
+
+#### 将来的な実装計画
+
+- **Python スクレイピング**で最新の時刻表データを取得
+- GitHub Actions で Python スクリプトを実行
+- 取得したデータをデータベースに自動投入
+
+### 5.2 GitHub Actionsの設定
 
 `.github/workflows/update-timetable.yml`が作成済み。以下の設定が必要：
 
@@ -120,13 +139,24 @@ VERCEL_URL: https://your-app.vercel.app
 - **自動実行**: 毎年3月1日午前2時（日本時間）
 - **手動実行**: GitHub Actionsページから実行可能
 
-### 5.2 データ更新の流れ
+### 5.3 データ更新の流れ
+
+#### 現在の流れ
 
 1. GitHub Actionsが定期実行される
 2. `/api/admin/seed`エンドポイントにPOSTリクエスト
 3. 既存データを削除（`action: "reset"`）
 4. 新しいシードデータを投入
 5. データ件数を確認して成功/失敗を判定
+
+#### 将来的な流れ（Python スクレイピング対応）
+
+1. GitHub Actionsが定期実行される
+2. Python スクリプトで最新の時刻表データをスクレイピング
+3. スクレイピングしたデータをJSON形式で保存
+4. `/api/admin/seed`エンドポイントにPOSTリクエスト（スクレイピングデータ付き）
+5. 既存データを削除して新しいデータを投入
+6. データ件数を確認して成功/失敗を判定
 
 ## 6. 手動でのデータ更新
 
@@ -148,7 +178,7 @@ npm run test:api
 curl -X GET https://your-app.vercel.app/api/admin/seed \
   -H "Authorization: Bearer your-secret-key"
 
-# データ更新
+# データ更新（現在は固定のシードデータ）
 curl -X POST https://your-app.vercel.app/api/admin/seed \
   -H "Authorization: Bearer your-secret-key" \
   -H "Content-Type: application/json" \
@@ -159,6 +189,12 @@ curl -X POST https://your-app.vercel.app/api/admin/seed \
   -H "Authorization: Bearer your-secret-key" \
   -H "Content-Type: application/json" \
   -d '{"action": "reset"}'
+
+# 将来的にはPythonスクレイピングで取得したデータを送信
+curl -X POST https://your-app.vercel.app/api/admin/seed \
+  -H "Authorization: Bearer your-secret-key" \
+  -H "Content-Type: application/json" \
+  -d '{"action": "scrape_update", "scraped_data": [...]}'
 ```
 
 ## 7. 利用可能なコマンド
@@ -197,6 +233,13 @@ npm run db:check
 2. `VERCEL_URL`が正しいか確認
 3. APIエンドポイントが正常に動作するか確認
 
+### 8.4 Python スクレイピング関連のエラー（将来的）
+
+1. スクレイピング対象サイトの構造変更に対応
+2. リクエスト制限やRate Limitingに対応
+3. スクレイピングしたデータの形式が正しいか確認
+4. Python依存関係の更新に対応
+
 ## 9. セキュリティ注意事項
 
 - `ADMIN_SECRET`は推測困難な文字列を使用
@@ -211,6 +254,7 @@ npm run db:check
 - **Vercel**: Hobby plan (無料)
 - **Supabase**: Free tier (無料)
 - **GitHub Actions**: 月2000分まで無料
+- **Python スクレイピング**: 追加費用なし（GitHub Actions内で実行）
 
 この構成なら完全無料で運用可能です。
 

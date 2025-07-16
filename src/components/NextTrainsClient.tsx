@@ -6,9 +6,10 @@ import { currentTimeAtom } from "@/atoms/timeAtom";
 import { upTrainsAtom, downTrainsAtom } from "@/atoms/trainAtom";
 import { useCurrentTime } from "@/hooks/useCurrentTime";
 import { useTrains } from "@/hooks/useTrains";
+import { useFormat } from "@/hooks/useFormat";
 import { TrainDisplayGrid } from "./TrainDisplayGrid";
 
-export function NextTrainsClient() {
+export const NextTrainsClient = () => {
   const currentTime = useAtomValue(currentTimeAtom);
   const upTrains = useAtomValue(upTrainsAtom);
   const downTrains = useAtomValue(downTrainsAtom);
@@ -16,11 +17,7 @@ export function NextTrainsClient() {
   // カスタムフックで時刻管理とデータ取得
   useCurrentTime();
   useTrains();
-
-  const fmt = (d: Date) =>
-    [d.getHours(), d.getMinutes(), d.getSeconds()]
-      .map((n) => String(n).padStart(2, "0"))
-      .join(":");
+  const { formatTimeHHMM } = useFormat();
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
@@ -28,7 +25,7 @@ export function NextTrainsClient() {
         suppressHydrationWarning
         className="mb-8 text-center text-3xl font-bold"
       >
-        現在時刻: {fmt(currentTime)}
+        現在時刻: {formatTimeHHMM(currentTime)}
       </h2>
 
       {/* 上りと下りを横に並べる */}
@@ -48,4 +45,4 @@ export function NextTrainsClient() {
       </div>
     </div>
   );
-}
+};

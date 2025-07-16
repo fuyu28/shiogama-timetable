@@ -7,8 +7,6 @@ import {
   filteredUpTrainsAtom,
   filteredDownTrainsAtom,
 } from "@/atoms/trainAtom";
-import { useCurrentTime } from "@/hooks/useCurrentTime";
-import { useTrains } from "@/hooks/useTrains";
 import { useFormat } from "@/hooks/useFormat";
 import { TrainDisplayGrid } from "./TrainDisplayGrid";
 import Link from "next/link";
@@ -18,9 +16,6 @@ export const NextTrainsClient = () => {
   const upTrains = useAtomValue(filteredUpTrainsAtom);
   const downTrains = useAtomValue(filteredDownTrainsAtom);
 
-  // カスタムフックで時刻管理とデータ取得
-  useCurrentTime();
-  useTrains();
   const { formatTime } = useFormat();
 
   return (

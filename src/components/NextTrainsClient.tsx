@@ -3,7 +3,10 @@
 import React from "react";
 import { useAtomValue } from "jotai";
 import { currentTimeAtom } from "@/atoms/timeAtom";
-import { upTrainsAtom, downTrainsAtom } from "@/atoms/trainAtom";
+import {
+  filteredUpTrainsAtom,
+  filteredDownTrainsAtom,
+} from "@/atoms/trainAtom";
 import { useCurrentTime } from "@/hooks/useCurrentTime";
 import { useTrains } from "@/hooks/useTrains";
 import { useFormat } from "@/hooks/useFormat";
@@ -12,8 +15,8 @@ import Link from "next/link";
 
 export const NextTrainsClient = () => {
   const currentTime = useAtomValue(currentTimeAtom);
-  const upTrains = useAtomValue(upTrainsAtom);
-  const downTrains = useAtomValue(downTrainsAtom);
+  const upTrains = useAtomValue(filteredUpTrainsAtom);
+  const downTrains = useAtomValue(filteredDownTrainsAtom);
 
   // カスタムフックで時刻管理とデータ取得
   useCurrentTime();

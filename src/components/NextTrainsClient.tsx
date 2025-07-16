@@ -8,6 +8,7 @@ import { useCurrentTime } from "@/hooks/useCurrentTime";
 import { useTrains } from "@/hooks/useTrains";
 import { useFormat } from "@/hooks/useFormat";
 import { TrainDisplayGrid } from "./TrainDisplayGrid";
+import Link from "next/link";
 
 export const NextTrainsClient = () => {
   const currentTime = useAtomValue(currentTimeAtom);
@@ -42,6 +43,16 @@ export const NextTrainsClient = () => {
           title="下り"
           borderColor="border-green-500"
         />
+      </div>
+      
+      {/* 時刻表一覧へのリンク */}
+      <div className="text-center mt-8">
+        <Link 
+          href="/list"
+          className="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg shadow-sm transition-colors duration-200"
+        >
+          📋 時刻表一覧を見る
+        </Link>
       </div>
     </div>
   );

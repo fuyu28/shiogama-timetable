@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { exec } from "child_process";
-import { path } from "path";
+import path from "path";
 
 // データベース初期化スクリプト
 async function setupDatabase() {
@@ -35,7 +35,7 @@ function execCommand(command) {
   return new Promise((resolve, reject) => {
     exec(
       command,
-      { cwd: path.resolve(__dirname, "..") },
+      { cwd: "/app" },
       (error, stdout, stderr) => {
         if (error) {
           reject(error);
@@ -53,4 +53,4 @@ function execCommand(command) {
 
 setupDatabase();
 
-module.exports = { setupDatabase };
+export { setupDatabase };

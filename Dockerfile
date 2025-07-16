@@ -1,24 +1,30 @@
-# Node.js環境
-FROM node:18-alpine AS base
+# Node.js環境（最新の安全なバージョン）
+FROM node:20-alpine
+
+# セキュリティ向上のため非rootユーザーを作成
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
 
 # 作業ディレクトリを設定
 WORKDIR /app
 
+# 作業ディレクトリの所有者を事前に設定
+RUN chown nextjs:nodejs /app
+
+# 非rootユーザーに切り替え
+USER nextjs
+
 # package.jsonとpackage-lock.jsonをコピー
-COPY package*.json ./
+COPY --chown=nextjs:nodejs package*.json ./
 
-# 依存関係をインストール
-RUN npm ci --only=production
+# Prismaスキーマをコピー（postinstallで必要）
+COPY --chown=nextjs:nodejs prisma ./prisma
 
-# 開発環境の場合は開発用依存関係もインストール
-FROM base AS dev
+# 依存関係をインストール（この時点でprisma generateが実行される）
 RUN npm ci
 
-# アプリケーションコードをコピー
-COPY . .
-
-# Prisma Clientを生成
-RUN npx prisma generate
+# 残りのアプリケーションコードをコピー
+COPY --chown=nextjs:nodejs . .
 
 # ポートを公開
 EXPOSE 3000

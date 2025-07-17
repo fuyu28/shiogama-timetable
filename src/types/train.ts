@@ -6,3 +6,20 @@ export type DepartureType = {
   destination: string;
   note: string | null;
 };
+
+export enum TimeStatus {
+  Past = "past",
+  Next = "next",
+  Future = "future",
+}
+
+export enum TrainEndpoint {
+  Regular = "regular",
+  First = "first",
+  Last = "last",
+}
+
+export enum Direction {
+  Up = "up",
+  Down = "down",
+}

@@ -6,6 +6,7 @@ import { TabNavigation } from "./TabNavigation";
 import { TrainList } from "./TrainList";
 import { LoadingFallback } from "./LoadingFallback";
 import { EmptyState } from "./EmptyState";
+import { MdArrowUpward } from "react-icons/md";
 
 export const TrainListView = () => {
   const activeTab = useAtomValue(activeTabAtom);
@@ -64,20 +65,7 @@ export const TrainListView = () => {
           className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-200 z-50"
           aria-label="一番上に戻る"
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 10l7-7m0 0l7 7m-7-7v18"
-            />
-          </svg>
+          <MdArrowUpward />
         </button>
       )}
     </div>

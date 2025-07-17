@@ -1,26 +1,38 @@
 import { forwardRef } from "react";
-import { DepartureType } from "@/types/train";
+import {
+  DepartureType,
+  Direction,
+  TimeStatus,
+  TrainEndpoint,
+} from "@/types/train";
 
 type TrainListItemProps = {
   train: DepartureType;
-  isNext: boolean;
-  isPast: boolean;
-  direction: "up" | "down";
-  isFirst: boolean;
-  isLast: boolean;
+  direction: Direction;
+  timeStatus: TimeStatus;
+  trainEndpoint: TrainEndpoint;
 };
 
 export const TrainListItem = forwardRef<HTMLDivElement, TrainListItemProps>(
-  ({ train, isNext, isPast, direction, isFirst, isLast }, ref) => {
+  ({ train, direction, timeStatus, trainEndpoint }, ref) => {
     const borderColor =
       direction === "up" ? "border-blue-500" : "border-green-500";
 
     const getItemStyle = () => {
-      if (isNext) return "bg-yellow-50 border-yellow-400 shadow-md";
-      if (isPast) return "bg-gray-50 text-gray-400/60";
-      if (isFirst) return "bg-green-50 border-green-400 shadow-lg";
-      if (isLast) return "bg-red-50 border-red-400 shadow-lg";
-      return "bg-white hover:bg-gray-50";
+      switch (timeStatus) {
+        case TimeStatus.Next:
+          return "bg-yellow-50 border-yellow-400 shadow-md";
+        case TimeStatus.Past:
+          return "bg-gray-50 text-gray-400/60";
+      }
+      switch (trainEndpoint) {
+        case TrainEndpoint.First:
+          return "bg-green-50 border-green-400 shadow-lg";
+        case TrainEndpoint.Last:
+          return "bg-red-50 border-red-400 shadow-lg";
+        default:
+          return "bg-white hover:bg-gray-50";
+      }
     };
 
     return (
@@ -40,12 +52,12 @@ export const TrainListItem = forwardRef<HTMLDivElement, TrainListItemProps>(
                   {train.note}
                 </span>
               )}
-              {isFirst && (
+              {trainEndpoint === TrainEndpoint.First && (
                 <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded font-semibold">
                   始発
                 </span>
               )}
-              {isLast && (
+              {trainEndpoint === TrainEndpoint.Last && (
                 <span className="ml-2 text-xs bg-red-100 text-red-800 px-2 py-1 rounded font-semibold">
                   終電
                 </span>
@@ -55,7 +67,7 @@ export const TrainListItem = forwardRef<HTMLDivElement, TrainListItemProps>(
         </div>
       </div>
     );
-  },
+  }
 );
 
 TrainListItem.displayName = "TrainListItem";

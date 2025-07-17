@@ -2,13 +2,14 @@ import { useEffect, useMemo, useRef } from "react";
 import { useAtomValue } from "jotai";
 import { useFormat } from "@/hooks/useFormat";
 import { currentTimeAtom } from "@/atoms/timeAtom";
-import { DepartureType } from "@/types/train";
+import { DepartureType, TimeStatus } from "@/types/train";
 import { TrainListItem } from "./TrainListItem";
-import { isEdgeTrain } from "@/utils/train";
+import { getTrainEndpointStatus } from "@/utils/train";
+import { Direction } from "@/types/train";
 
 type TrainListProps = {
   trains: DepartureType[];
-  direction: "up" | "down";
+  direction: Direction;
 };
 
 export const TrainList = ({ trains, direction }: TrainListProps) => {
@@ -33,18 +34,29 @@ export const TrainList = ({ trains, direction }: TrainListProps) => {
 
   return (
     <div className="space-y-2 p-4">
-      {trains.map((train) => (
-        <TrainListItem
-          key={train.id}
-          ref={train.id === nextTrain?.id ? nextTrainRef : null}
-          train={train}
-          isNext={train.id === nextTrain?.id}
-          isPast={train.departureTime < formatTimeHHMM(currentTime)}
-          direction={direction}
-          isFirst={isEdgeTrain(train, trains, "first")}
-          isLast={isEdgeTrain(train, trains, "last")}
-        />
-      ))}
+      {trains.map((train) => {
+        const currentTimeHHMM = formatTimeHHMM(currentTime);
+        let timeStatus: TimeStatus;
+        if (train.departureTime < currentTimeHHMM) {
+          timeStatus = TimeStatus.Past;
+        } else if (nextTrain?.id === train.id) {
+          timeStatus = TimeStatus.Next;
+        } else {
+          timeStatus = TimeStatus.Future;
+        }
+
+        const trainEndpoint = getTrainEndpointStatus(train, trains);
+        return (
+          <TrainListItem
+            key={train.id}
+            ref={train.id === nextTrain?.id ? nextTrainRef : null}
+            train={train}
+            direction={direction}
+            timeStatus={timeStatus}
+            trainEndpoint={trainEndpoint}
+          />
+        );
+      })}
     </div>
   );
 };

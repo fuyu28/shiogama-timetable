@@ -1,4 +1,4 @@
-import { DepartureType } from "@/types/train";
+import { DepartureType, TrainEndpoint } from "@/types/train";
 
 export const toMinutes = (timStr: string) => {
   const [rawHour, rawMinute] = timStr.split(":").map(Number);
@@ -51,4 +51,18 @@ export const findNextTrain = (
   });
 
   return sortedTrains.slice(0, 3);
+};
+
+export const getTrainEndpointStatus = (
+  target: DepartureType,
+  trains: DepartureType[]
+): TrainEndpoint => {
+  const firstMin = getExtremeMinutes(trains, "min");
+  const lastMin = getExtremeMinutes(trains, "max");
+
+  const targetMin = toMinutes(target.departureTime);
+
+  if (firstMin != null && targetMin === firstMin) return TrainEndpoint.First;
+  if (lastMin !== null && targetMin === lastMin) return TrainEndpoint.Last;
+  return TrainEndpoint.Regular;
 };

@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 import { activeTabAtom } from "@/atoms/tabAtom";
 import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
+import { Direction } from "@/types/train";
 
 export const TabNavigation = () => {
   const [activeTab, setActiveTab] = useAtom(activeTabAtom);
@@ -13,7 +14,7 @@ export const TabNavigation = () => {
             ? "bg-blue-500 text-white shadow-md transform scale-105"
             : "text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow-sm"
         }`}
-        onClick={() => setActiveTab("up")}
+        onClick={() => setActiveTab(Direction.Up)}
       >
         <MdArrowUpward className="w-4 h-4 inline mr-1" />
         上り
@@ -24,7 +25,7 @@ export const TabNavigation = () => {
             ? "bg-green-500 text-white shadow-md transform scale-105"
             : "text-gray-600 hover:bg-white hover:text-green-600 hover:shadow-sm"
         }`}
-        onClick={() => setActiveTab("down")}
+        onClick={() => setActiveTab(Direction.Down)}
       >
         <MdArrowDownward className="w-4 h-4 inline mr-1" />
         下り

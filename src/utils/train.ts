@@ -10,7 +10,7 @@ export const toMinutes = (timStr: string) => {
 
 const getExtremeMinutes = (
   trains: DepartureType[],
-  mode: "min" | "max",
+  mode: "min" | "max"
 ): number | null => {
   if (trains.length === 0) return null;
 
@@ -21,10 +21,34 @@ const getExtremeMinutes = (
 export const isEdgeTrain = (
   target: DepartureType,
   trains: DepartureType[],
-  mode: "first" | "last",
+  mode: "first" | "last"
 ): boolean => {
   const extreme = getExtremeMinutes(trains, mode === "first" ? "min" : "max");
   if (extreme === null) return false;
 
   return toMinutes(target.departureTime) === extreme;
+};
+
+export const findNextTrain = (
+  trains: DepartureType[],
+  target: string
+): DepartureType[] | null => {
+  const targetMin = toMinutes(target);
+
+  // 指定された時間以降の電車のリスト
+  const validTrains = trains.filter((train) => {
+    const trainMinutes = toMinutes(train.departureTime);
+    return trainMinutes >= targetMin;
+  });
+
+  if (validTrains.length === 0) return null;
+
+  // 最も早い電車を見つける
+  const sortedTrains = validTrains.sort((a, b) => {
+    const minutesA = toMinutes(a.departureTime);
+    const minutesB = toMinutes(b.departureTime);
+    return minutesA - minutesB;
+  });
+
+  return sortedTrains.slice(0, 3);
 };

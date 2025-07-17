@@ -2,11 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MdSchedule, MdList, MdMap, MdNightsStay } from "react-icons/md";
+import {
+  MdSchedule,
+  MdList,
+  MdMap,
+  MdNightsStay,
+  MdDirectionsRun,
+} from "react-icons/md";
 
 const navigationItems = [
   { href: "/", label: "時刻表", icon: MdSchedule },
   { href: "/list", label: "一覧表示", icon: MdList },
+  { href: "/saitan-train", label: "最短電車", icon: MdDirectionsRun },
   { href: "/last-train", label: "終電情報", icon: MdNightsStay },
   { href: "/route-map", label: "路線図", icon: MdMap },
 ];
@@ -21,7 +28,7 @@ export function Navigation() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <h1 className="text-xl font-bold text-gray-900">
-                塩釜口駅時刻表APP
+                塩釜口駅時刻表
               </h1>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">

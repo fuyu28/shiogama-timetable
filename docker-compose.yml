@@ -31,12 +31,13 @@ services:
       DATABASE_URL: "postgresql://user:postgres@db:5432/timetable_dev"
       NODE_ENV: development
     volumes:
-      - .:/app
+      - .:/app:delegated
       - /app/node_modules
+      - ./.next:/app/.next
     command: >
       sh -c "
         npm run db:setup &&
-        npm run dev
+        npx next dev -H 0.0.0.0
       "
 
 volumes:

@@ -13,7 +13,7 @@ const createFilteredTrainsAtom = (trainsAtom: PrimitiveAtom<DepartureType[]>) =>
     const currentTime = get(currentTimeAtom);
     const now = formatTimeHHMM(currentTime);
 
-    const next = trains.filter((t) => t.departureTime >= now);
+    const next = trains.filter((t) => t.departureTime > now);
     return next.length > 0 ? next.slice(0, 3) : trains.slice(0, 3);
   });
 

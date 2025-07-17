@@ -8,9 +8,14 @@ import {
   filteredDownTrainsAtom,
 } from "@/atoms/trainAtom";
 import { useFormat } from "@/hooks/useFormat";
+import { useCurrentTime } from "@/hooks/useCurrentTime";
+import { useTrains } from "@/hooks/useTrains";
 import { TrainDisplayGrid } from "./TrainDisplayGrid";
 
 export const NextTrainsClient = () => {
+  useCurrentTime(true);
+  useTrains(true);
+
   const currentTime = useAtomValue(currentTimeAtom);
   const upTrains = useAtomValue(filteredUpTrainsAtom);
   const downTrains = useAtomValue(filteredDownTrainsAtom);

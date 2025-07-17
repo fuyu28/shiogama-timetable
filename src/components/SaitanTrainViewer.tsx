@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAtomValue } from "jotai";
 import { upTrainsAtom, downTrainsAtom } from "@/atoms/trainAtom";
+import { useTrains } from "@/hooks/useTrains";
 import { DepartureType } from "@/types/train";
 import { toMinutes } from "@/utils/train";
 import { findNextTrain } from "@/utils/train";
@@ -85,6 +86,9 @@ const TrainCard = ({
 };
 
 export const SaitanTrainViewer = () => {
+  // 必要な機能を直接呼び出し
+  useTrains(true); // 電車データが必要（現在時刻は不要）
+  
   const upTrains = useAtomValue(upTrainsAtom);
   const downTrains = useAtomValue(downTrainsAtom);
   const [selectedTime, setSelectedTime] = useState<string>(CLASS_END_TIMES[0]);

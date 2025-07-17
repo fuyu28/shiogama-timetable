@@ -2,6 +2,8 @@ import { useAtomValue } from "jotai";
 import { useState, useEffect } from "react";
 import { activeTabAtom } from "@/atoms/tabAtom";
 import { downTrainsAtom, upTrainsAtom } from "@/atoms/trainAtom";
+import { useCurrentTime } from "@/hooks/useCurrentTime";
+import { useTrains } from "@/hooks/useTrains";
 import { TabNavigation } from "./TabNavigation";
 import { TrainList } from "./TrainList";
 import { LoadingFallback } from "./LoadingFallback";
@@ -9,6 +11,10 @@ import { EmptyState } from "./EmptyState";
 import { MdArrowUpward } from "react-icons/md";
 
 export const TrainListView = () => {
+  // 必要な機能を直接呼び出し
+  useCurrentTime(true); // 現在時刻が必要（TrainListで使用）
+  useTrains(true); // 電車データが必要
+
   const activeTab = useAtomValue(activeTabAtom);
   const upTrains = useAtomValue(upTrainsAtom);
   const downTrains = useAtomValue(downTrainsAtom);

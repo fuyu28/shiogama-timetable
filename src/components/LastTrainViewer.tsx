@@ -1,6 +1,8 @@
 import { useAtomValue } from "jotai";
 import { upTrainsAtom, downTrainsAtom } from "@/atoms/trainAtom";
 import { currentTimeAtom } from "@/atoms/timeAtom";
+import { useCurrentTime } from "@/hooks/useCurrentTime";
+import { useTrains } from "@/hooks/useTrains";
 import { getLastTrainInfo, isLastTrainPassed } from "@/utils/lastTrain";
 import { formatTimeHHMM } from "@/utils/time";
 import { DepartureType } from "@/types/train";
@@ -126,6 +128,9 @@ const LastTrainsByDestination = ({
 };
 
 export const LastTrainViewer = () => {
+  useCurrentTime(true);
+  useTrains(true);
+
   const upTrains = useAtomValue(upTrainsAtom);
   const downTrains = useAtomValue(downTrainsAtom);
   const currentTime = useAtomValue(currentTimeAtom);

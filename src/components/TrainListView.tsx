@@ -45,7 +45,7 @@ export const TrainListView = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto">
-        <div className="bg-white shadow-sm">
+        <div className="sticky top-0 z-40 bg-white shadow-sm">
           <TabNavigation />
         </div>
 
@@ -65,15 +65,25 @@ export const TrainListView = () => {
         </div>
       </div>
 
-      {showBackToTop && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-200 z-50"
-          aria-label="一番上に戻る"
-        >
-          <MdArrowUpward />
-        </button>
-      )}
+      {/* 常にボタンを描画し、表示/非表示とアニメーションはCSSクラスの切り替えで行う。*/}
+      <button
+        onClick={scrollToTop}
+        aria-label="一番上に戻る"
+        className={`
+          fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg z-50
+          
+          /* アニメーションの定義 */
+          transition-all duration-300 ease-in-out transform
+          
+          ${
+            showBackToTop
+              ? "opacity-100 translate-y-0" // 表示時
+              : "opacity-0 translate-y-4 pointer-events-none" // 非表示時
+          }
+        `}
+      >
+        <MdArrowUpward size={24} />
+      </button>
     </div>
   );
 };

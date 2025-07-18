@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 import { useFormat } from "@/hooks/useFormat";
 import { currentTimeAtom } from "@/atoms/timeAtom";
 import { DepartureType, TimeStatus } from "@/types/train";
-import { TrainListItem } from "./TrainListItem";
+import { TrainDisplayItem } from "./TrainDisplayItem";
 import { getTrainEndpointStatus } from "@/utils/train";
 import { Direction } from "@/types/train";
 
@@ -47,7 +47,7 @@ export const TrainList = ({ trains, direction }: TrainListProps) => {
 
         const trainEndpoint = getTrainEndpointStatus(train, trains);
         return (
-          <TrainListItem
+          <TrainDisplayItem
             key={train.id}
             ref={train.id === nextTrain?.id ? nextTrainRef : null}
             train={train}

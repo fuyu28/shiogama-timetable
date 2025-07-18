@@ -43,14 +43,26 @@ export const findNextTrain = (
 
   if (validTrains.length === 0) return null;
 
-  // 最も早い電車を見つける
+  // 時刻でソート
   const sortedTrains = validTrains.sort((a, b) => {
     const minutesA = toMinutes(a.departureTime);
     const minutesB = toMinutes(b.departureTime);
     return minutesA - minutesB;
   });
 
-  return sortedTrains.slice(0, 3);
+  // 異なる時刻の電車を3つまで取得
+  const uniqueTimeTrains: DepartureType[] = [];
+  const seenTimes = new Set<string>();
+
+  for (const train of sortedTrains) {
+    if (!seenTimes.has(train.departureTime)) {
+      uniqueTimeTrains.push(train);
+      seenTimes.add(train.departureTime);
+      if (uniqueTimeTrains.length >= 3) break;
+    }
+  }
+
+  return uniqueTimeTrains;
 };
 
 export const getTrainEndpointStatus = (

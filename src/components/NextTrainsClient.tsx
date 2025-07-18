@@ -32,7 +32,7 @@ export const NextTrainsClient = () => {
       </h2>
 
       {/* 上りと下りを横に並べる */}
-      <div className="flex flex-col md:flex-row md:gap-8">
+      <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row md:gap-8">
         {/* 上り方面の表示 */}
         <TrainDisplayGrid
           trains={upTrains}

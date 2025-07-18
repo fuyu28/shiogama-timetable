@@ -126,7 +126,7 @@ export const SaitanTrainViewer = () => {
           {selectedTime}終了後の最短電車
         </h2>
 
-        <div className="flex flex-col md:flex-row md:gap-8">
+        <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row md:gap-8">
           {nextUpTrain && (
             <TrainCard
               trains={nextUpTrain}

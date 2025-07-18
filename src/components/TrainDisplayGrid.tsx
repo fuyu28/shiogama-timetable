@@ -56,7 +56,9 @@ const TrainDisplayGridComponent = ({
                 {firstTrain.departureTime}
               </div>
               <div className="mt-1 text-lg text-gray-600">
-                {firstTrain.destination} 行
+                {firstTrain.destination}
+                {/* 「行」を小さく、薄くする */}
+                <span className="ml-1 text-sm text-gray-500">行</span>
                 {firstTrain.note && (
                   <span className="block text-sm">({firstTrain.note})</span>
                 )}
@@ -77,7 +79,8 @@ const TrainDisplayGridComponent = ({
                 {secondTrain.departureTime}
               </div>
               <div className="text-base text-gray-600">
-                {secondTrain.destination} 行
+                {secondTrain.destination}
+                <span className="ml-1 text-xs text-gray-500">行</span>
                 {secondTrain.note && (
                   <span className="block text-xs">({secondTrain.note})</span>
                 )}
@@ -97,7 +100,8 @@ const TrainDisplayGridComponent = ({
                 {thirdTrain.departureTime}
               </div>
               <div className="text-base text-gray-600">
-                {thirdTrain.destination} 行
+                {thirdTrain.destination}
+                <span className="ml-1 text-xs text-gray-500">行</span>
                 {thirdTrain.note && (
                   <span className="block text-xs">({thirdTrain.note})</span>
                 )}

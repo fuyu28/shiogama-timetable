@@ -45,7 +45,7 @@ export const TrainListView = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto">
-        <div className="sticky top-0 z-40 bg-white shadow-sm">
+        <div className="sticky top-16 z-40 bg-white shadow-sm">
           <TabNavigation />
         </div>
 

@@ -1,5 +1,7 @@
+// prisma/seed.ts
 import "dotenv/config";
 import { PrismaClient, Direction, DayType, Prisma } from "@prisma/client";
+import { writeFileSync } from "fs";
 
 const prisma = new PrismaClient();
 
@@ -390,8 +392,17 @@ const downHoliday: Record<number, Entry[]> = {
   0: [["11"], ["22"]],
 };
 
-// 実際のシード投入用データを一気に作る
-const seedData = [
+// CSV 用のヘッダー行
+const CSV_HEADER = [
+  "direction",
+  "dayType",
+  "departureTime",
+  "destination",
+  "note",
+] as const;
+
+// seedData は既に生成済み
+const seedData: Prisma.DepartureCreateManyInput[] = [
   ...generateDepartures("WEEKDAY", "UP", upWeekday),
   ...generateDepartures("HOLIDAY", "UP", upHoliday),
   ...generateDepartures("WEEKDAY", "DOWN", downWeekday),
@@ -399,12 +410,33 @@ const seedData = [
 ];
 
 async function main(): Promise<void> {
-  try {
-    await prisma.departure.createMany({ data: seedData, skipDuplicates: true });
-    console.log(seedData);
-  } catch (e) {
-    console.error(e);
-  }
+  // ① DB に流し込む場合
+  await prisma.departure.createMany({ data: seedData, skipDuplicates: true });
+
+  // ② CSV に書き出す場合
+  const lines = [
+    CSV_HEADER.join(","), // ヘッダー
+    ...seedData.map((row) =>
+      [
+        row.direction,
+        row.dayType,
+        row.departureTime,
+        row.destination,
+        row.note ?? "",
+      ]
+        .map((field) => `"${String(field).replace(/"/g, '""')}"`) // 必要に応じてエスケープ
+        .join(",")
+    ),
+  ];
+  writeFileSync("timetable.csv", lines.join("\n"), { encoding: "utf-8" });
+  console.log("timetable.csv を出力しました。");
 }
 
-main();
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => {
+    prisma.$disconnect();
+  });

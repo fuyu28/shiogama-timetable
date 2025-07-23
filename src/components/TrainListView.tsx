@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import { useState, useEffect } from "react";
 import { activeTabAtom } from "@/atoms/tabAtom";
-import { downTrainsAtom, upTrainsAtom } from "@/atoms/trainAtom";
+import { downTrainsAtom, upTrainsAtom, isLoadingAtom } from "@/atoms/trainAtom";
 import { useCurrentTime } from "@/hooks/useCurrentTime";
 import { useTrains } from "@/hooks/useTrains";
 import { TabNavigation } from "./TabNavigation";
@@ -18,12 +18,10 @@ export const TrainListView = () => {
   const activeTab = useAtomValue(activeTabAtom);
   const upTrains = useAtomValue(upTrainsAtom);
   const downTrains = useAtomValue(downTrainsAtom);
+  const isLoading = useAtomValue(isLoadingAtom);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   const trains = activeTab === "up" ? upTrains : downTrains;
-
-  // ローディング状態の判定
-  const isLoading = upTrains.length === 0 && downTrains.length === 0;
   const isEmpty = trains.length === 0 && !isLoading;
 
   useEffect(() => {
@@ -71,10 +69,10 @@ export const TrainListView = () => {
         aria-label="一番上に戻る"
         className={`
           fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg z-50
-          
+
           /* アニメーションの定義 */
           transition-all duration-300 ease-in-out transform
-          
+
           ${
             showBackToTop
               ? "opacity-100 translate-y-0" // 表示時

@@ -19,3 +19,9 @@ const createFilteredTrainsAtom = (trainsAtom: PrimitiveAtom<DepartureType[]>) =>
 
 export const filteredUpTrainsAtom = createFilteredTrainsAtom(upTrainsAtom);
 export const filteredDownTrainsAtom = createFilteredTrainsAtom(downTrainsAtom);
+
+export const isLoadingAtom = atom<boolean>((get) => {
+  const upTrains = get(upTrainsAtom);
+  const downTrains = get(downTrainsAtom);
+  return upTrains.length === 0 && downTrains.length === 0;
+});

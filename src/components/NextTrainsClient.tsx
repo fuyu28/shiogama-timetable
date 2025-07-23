@@ -6,11 +6,13 @@ import { currentTimeAtom } from "@/atoms/timeAtom";
 import {
   filteredUpTrainsAtom,
   filteredDownTrainsAtom,
+  isLoadingAtom,
 } from "@/atoms/trainAtom";
 import { useFormat } from "@/hooks/useFormat";
 import { useCurrentTime } from "@/hooks/useCurrentTime";
 import { useTrains } from "@/hooks/useTrains";
 import { TrainDisplayGrid } from "./TrainDisplayGrid";
+import { LoadingFallback } from "./LoadingFallback";
 
 export const NextTrainsClient = () => {
   useCurrentTime(true);
@@ -19,6 +21,7 @@ export const NextTrainsClient = () => {
   const currentTime = useAtomValue(currentTimeAtom);
   const upTrains = useAtomValue(filteredUpTrainsAtom);
   const downTrains = useAtomValue(filteredDownTrainsAtom);
+  const isLoading = useAtomValue(isLoadingAtom);
 
   const { formatTime } = useFormat();
 
@@ -31,21 +34,22 @@ export const NextTrainsClient = () => {
         現在時刻: {formatTime(currentTime)}
       </h2>
 
-      {/* 上りと下りを横に並べる */}
-      <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row md:gap-8">
-        {/* 上り方面の表示 */}
-        <TrainDisplayGrid
-          trains={upTrains}
-          title="上り"
-          borderColor="border-blue-500"
-        />
-        {/* 下り方面の表示 */}
-        <TrainDisplayGrid
-          trains={downTrains}
-          title="下り"
-          borderColor="border-green-500"
-        />
-      </div>
+      {isLoading ? (
+        <LoadingFallback />
+      ) : (
+        <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row md:gap-8">
+          <TrainDisplayGrid
+            trains={upTrains}
+            title="上り"
+            borderColor="border-blue-500"
+          />
+          <TrainDisplayGrid
+            trains={downTrains}
+            title="下り"
+            borderColor="border-green-500"
+          />
+        </div>
+      )}
     </div>
   );
 };

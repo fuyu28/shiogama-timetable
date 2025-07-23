@@ -1,11 +1,12 @@
 import { useAtomValue } from "jotai";
-import { upTrainsAtom, downTrainsAtom } from "@/atoms/trainAtom";
+import { upTrainsAtom, downTrainsAtom, isLoadingAtom } from "@/atoms/trainAtom";
 import { currentTimeAtom } from "@/atoms/timeAtom";
 import { useCurrentTime } from "@/hooks/useCurrentTime";
 import { useTrains } from "@/hooks/useTrains";
 import { getLastTrainInfo, isLastTrainPassed } from "@/utils/lastTrain";
 import { formatTimeHHMM } from "@/utils/time";
 import { DepartureType } from "@/types/train";
+import { LoadingFallback } from "./LoadingFallback";
 
 const LastTrainCard = ({
   train,
@@ -145,6 +146,7 @@ export const LastTrainViewer = () => {
   );
 
   const allTrainsPassed = upTrainPassed && downTrainPassed;
+  const isLoading = useAtomValue(isLoadingAtom);
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
@@ -155,42 +157,48 @@ export const LastTrainViewer = () => {
         </div>
       </div>
 
-      {allTrainsPassed && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-            <div className="text-red-700 font-medium">
-              本日の終電は終了しました
+      {isLoading ? (
+        <LoadingFallback />
+      ) : (
+        <>
+          {allTrainsPassed && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                <div className="text-red-700 font-medium">
+                  本日の終電は終了しました
+                </div>
+              </div>
             </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <LastTrainCard
+              train={lastTrainInfo.up}
+              direction="上り"
+              isPassed={upTrainPassed}
+            />
+            <LastTrainCard
+              train={lastTrainInfo.down}
+              direction="下り"
+              isPassed={downTrainPassed}
+            />
           </div>
-        </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <LastTrainsByDestination
+              trains={lastTrainInfo.upByDestination}
+              direction="上り"
+              currentTime={currentTimeString}
+            />
+            <LastTrainsByDestination
+              trains={lastTrainInfo.downByDestination}
+              direction="下り"
+              currentTime={currentTimeString}
+            />
+          </div>
+        </>
       )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <LastTrainCard
-          train={lastTrainInfo.up}
-          direction="上り"
-          isPassed={upTrainPassed}
-        />
-        <LastTrainCard
-          train={lastTrainInfo.down}
-          direction="下り"
-          isPassed={downTrainPassed}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <LastTrainsByDestination
-          trains={lastTrainInfo.upByDestination}
-          direction="上り"
-          currentTime={currentTimeString}
-        />
-        <LastTrainsByDestination
-          trains={lastTrainInfo.downByDestination}
-          direction="下り"
-          currentTime={currentTimeString}
-        />
-      </div>
     </div>
   );
 };

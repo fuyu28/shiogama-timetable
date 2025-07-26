@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { useSetAtom } from "jotai";
+import * as holiday_jp from "@holiday-jp/holiday_jp";
 import { upTrainsAtom, downTrainsAtom } from "@/atoms/trainAtom";
+import { isDepartureArray, DepartureType } from "@/types/train";
 
 export const useTrains = (enabled = true) => {
   const setUpTrains = useSetAtom(upTrainsAtom);
@@ -8,14 +10,29 @@ export const useTrains = (enabled = true) => {
 
   const fetchTrain = useCallback(async () => {
     if (!enabled) return;
+    const now = new Date();
+    const dayType = holiday_jp.isHoliday(now) ? "HOLIDAY" : "WEEKDAY";
 
     try {
-      const res = await fetch("/api/trains");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+      const res = await fetch(`${apiUrl}/api/departures?dayType=${dayType}`);
       if (!res.ok) throw new Error("Network response was not ok");
-      const { upTrains: up, downTrains: down } = await res.json();
+      const data = await res.json();
 
-      setUpTrains(up);
-      setDownTrains(down);
+      if (!isDepartureArray(data)) {
+        console.error("Invalid data format received from API");
+        return;
+      }
+
+      const upTrains = data.filter(
+        (train: DepartureType) => train.direction === "UP"
+      );
+      const downTrains = data.filter(
+        (train: DepartureType) => train.direction === "DOWN"
+      );
+
+      setUpTrains(upTrains);
+      setDownTrains(downTrains);
     } catch (e) {
       console.error("fetch trains failed", e);
     }

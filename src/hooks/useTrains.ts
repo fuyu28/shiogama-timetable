@@ -11,7 +11,9 @@ export const useTrains = (enabled = true) => {
   const fetchTrain = useCallback(async () => {
     if (!enabled) return;
     const now = new Date();
-    const dayType = holiday_jp.isHoliday(now) ? "HOLIDAY" : "WEEKDAY";
+    const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+    const dayType =
+      holiday_jp.isHoliday(now) || isWeekend ? "HOLIDAY" : "WEEKDAY";
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
